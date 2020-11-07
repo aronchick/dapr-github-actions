@@ -1,0 +1,50 @@
+name: main
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  workflow_run:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7.9'
+
+    - name: Setup Environment
+      run: |
+        python3 -m pip install --upgrade pip setuptools wheel
+        python3 -m pip install -r requirements.txt
+        wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+        echo "/home/runner/.dapr/bin" >> $GITHUB_PATH
+
+    - name: Setting up dapr
+      id: create_components
+      run: |
+        python3 export_secrets_to_components.py
+        dapr init
+        dapr run --app-id dapr_sidecar -d components -P grpc -G 20001 &
+      env:
+        COMPONENT_LOCALREDIS: ${{ secrets.COMPONENT_LOCALREDIS }}
+
+    - name: Step 1 - Retrieve a secret
+      id: step_1
+      run: python3 step_1.py
+
+    - name: Step 2 - Execute two race condition possible steps simultanenously
+      id: step_2
+      run: python3 step_2.py
+
+    - name: Step 3 - Fire off a long running job
+      id: step_3
+      run: python3 step_3.py
+      env:
+        EXTERNAL_PIPELINE: ${{ secrets.EXTERNAL_PIPELINE }}
+        EXTERNAL_PIPELINE_SHARED_SECRET: ${{ secrets.EXTERNAL_PIPELINE_SHARED_SECRET }}
+
+    - name: Step 4 - Receive result of long running job and continue
+      id: step_4
+      run: dapr run --app-id step_4 --app-protocol grpc --app-port 50051 -d ./components python3 step_4.py
