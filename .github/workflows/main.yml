@@ -26,25 +26,19 @@ jobs:
       run: |
         python3 export_secrets_to_components.py
         dapr init
-        dapr run --app-id dapr_sidecar -d components -P grpc -G 20001 &
+        dapr run --app-id dapr_sidecar -d components -P grpc -G 20000 &
       env:
-        COMPONENT_LOCALREDIS: ${{ secrets.COMPONENT_LOCALREDIS }}
+        COMPONENT_LOCALREDISSTATE: ${{ secrets.COMPONENT_LOCALREDISSTATE }}
+        COMPONENT_LOCALKAFKA: ${{ secrets.COMPONENT_LOCALKAFKA }}
 
-    - name: Step 1 - Retrieve a secret
+    - name: Step 1 - Retrieve state
       id: step_1
       run: python3 step_1.py
 
-    - name: Step 2 - Execute two race condition possible steps simultanenously
+    - name: Step 2 - Push a value
       id: step_2
       run: python3 step_2.py
 
-    - name: Step 3 - Fire off a long running job
-      id: step_3
-      run: python3 step_3.py
-      env:
-        EXTERNAL_PIPELINE: ${{ secrets.EXTERNAL_PIPELINE }}
-        EXTERNAL_PIPELINE_SHARED_SECRET: ${{ secrets.EXTERNAL_PIPELINE_SHARED_SECRET }}
-
-    - name: Step 4 - Receive result of long running job and continue
-      id: step_4
-      run: dapr run --app-id step_4 --app-protocol grpc --app-port 50051 -d ./components python3 step_4.py
+    - name: Step 2 - Push and pull a value
+      id: step_2
+      run: dapr run --app-id step_4 --app-protocol grpc --app-port 50051 -d ./components python3 step_3.py
