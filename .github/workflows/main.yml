@@ -35,7 +35,7 @@ jobs:
         dapr run --app-id dapr_sidecar -d components -P grpc -G $DAPR_PORT &
       env:
         DAPR_COMPONENT_LOCALREDISSTATE: ${{ secrets.DAPR_COMPONENT_STATE_STORE }}
-        DAPR_COMPONENT_PUBSUB_NAME: ${{ secrets.DAPR_COMPONENT_PUBSUB }}
+        DAPR_COMPONENT_LOCALPUBSUB: ${{ secrets.DAPR_COMPONENT_PUBSUB }}
 
     - name: Step 1 - Retrieve state
       id: step_1
