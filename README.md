@@ -17,4 +17,7 @@ SAMPLE_KEY_NAME: "sample_key_name"
 # Execution
 To execute this workflow, simply make any change and push it. You'll be able to see all the outputs in the Actions tab.
 
-**BUG** Currently CONSUMING from Redis streams is still broken. Working it out.
+# Debugging Locally
+To debug your workflows locally, I've created `test_workflow.py` which can be used for testing local functioning and mimic the production GitHub environment.
+
+You need to update
