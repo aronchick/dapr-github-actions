@@ -20,4 +20,8 @@ To execute this workflow, simply make any change and push it. You'll be able to 
 # Debugging Locally
 To debug your workflows locally, I've created `test_workflow.py` which can be used for testing local functioning and mimic the production GitHub environment.
 
-You need to update
+You need to update `local_components` with whatever you're running locally.
+
+IDEALLY you could just update .env, but, for whatever reason, when running under VSCode debugger, it doesn't copy line breaks. 
+
+**BUG** Figure out how to ONLY use .env.
