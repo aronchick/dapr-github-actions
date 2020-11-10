@@ -8,7 +8,7 @@ if not (component_dir.exists()):
 
 for key in os.environ.keys():
     component_value = os.environ.get(key)
-    if component_value is not None and key.startswith("COMPONENT_"):
+    if component_value is not None and key.startswith("DAPR_COMPONENT_"):
         file_path = component_dir / f"{key}.yaml"
         print(f"Writing to {str(file_path.absolute())}")
         file_path.write_text(component_value)

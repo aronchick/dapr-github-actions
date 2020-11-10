@@ -6,6 +6,12 @@ on:
 
 jobs:
   workflow_run:
+    env:
+      DAPR_PORT: "20000"
+      DAPR_APP_PORT: "20001"
+      STATE_STORE_NAME: "redisstatestore"
+      PUBSUB_NAME: "kafkapubsub"
+      SAMPLE_KEY_NAME: "sample_key_name"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -26,19 +32,25 @@ jobs:
       run: |
         python3 export_secrets_to_components.py
         dapr init
-        dapr run --app-id dapr_sidecar -d components -P grpc -G 20000 &
+        dapr run --app-id dapr_sidecar -d components -P grpc -G $DAPR_PORT &
       env:
-        COMPONENT_LOCALREDISSTATE: ${{ secrets.COMPONENT_LOCALREDISSTATE }}
-        COMPONENT_LOCALKAFKA: ${{ secrets.COMPONENT_LOCALKAFKA }}
+        DAPR_COMPONENT_LOCALREDISSTATE: ${{ secrets.DAPR_COMPONENT_STATE_STORE }}
+        DAPR_COMPONENT_PUBSUB_NAME: ${{ secrets.DAPR_COMPONENT_PUBSUB }}
 
     - name: Step 1 - Retrieve state
       id: step_1
       run: python3 step_1.py
 
-    - name: Step 2 - Push a value
+    - name: Step 2 - Write with contention
       id: step_2
       run: python3 step_2.py
 
-    - name: Step 2 - Push and pull a value
-      id: step_2
-      run: dapr run --app-id step_4 --app-protocol grpc --app-port 50051 -d ./components python3 step_3.py
+    # - name: Step 3 - Push and pull to pubsub
+    #   id: step_3
+    #   run: |
+    #     dapr run --app-id step_3_consume --app-protocol grpc --app-port 20001 -d ./components python3 step_3_consume.py &
+    #     python3 step_3_publish.py
+
+    - name: Stop Dapr
+      id: stop_dapr
+      run: dapr stop dapr_sidecar
