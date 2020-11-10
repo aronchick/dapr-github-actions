@@ -25,3 +25,5 @@ You need to update `local_components` with whatever you're running locally.
 IDEALLY you could just update .env, but, for whatever reason, when running under VSCode debugger, it doesn't copy line breaks. 
 
 **BUG** Figure out how to ONLY use .env.
+
+Hi community
