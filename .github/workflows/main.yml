@@ -48,7 +48,7 @@ jobs:
     - name: Step 3 - Push and pull to pubsub
       id: step_3
       run: |
-        # dapr run --app-id step_3_consume --app-protocol grpc --app-port 20001 -d ./components python3 step_3_consume.py &
+        dapr run --app-id step_3_consume --app-protocol grpc --app-port 20001 -d ./components python3 step_3_consume.py &
         python3 step_3_publish.py
 
     - name: Stop Dapr
