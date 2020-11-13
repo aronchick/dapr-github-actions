@@ -26,4 +26,4 @@ IDEALLY you could just update .env, but, for whatever reason, when running under
 
 **BUG** Figure out how to ONLY use .env.
 
-Hi community
+Hi Canonical
