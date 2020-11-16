@@ -10,7 +10,7 @@ jobs:
       DAPR_PORT: "20000"
       DAPR_APP_PORT: "20001"
       STATE_STORE_NAME: "redisstatestore"
-      PUBSUB_NAME: "kafkapubsub"
+      PUBSUB_NAME: "redispubsub"
       SAMPLE_KEY_NAME: "sample_key_name"
     runs-on: ubuntu-latest
     steps:
